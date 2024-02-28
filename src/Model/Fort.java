@@ -34,6 +34,4 @@ public class Fort {
     public void setShape(char[][] shape) {
         this.shape = shape;
     }
-
-
 }

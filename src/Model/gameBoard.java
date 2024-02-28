@@ -5,20 +5,17 @@ import java.util.Random;
 public class gameBoard {
     private static final int board_size = 10;
     private char[][] board;
-    private Fort[] forts;
+    private char [][] hiddenBoard;
 
+    //default-constructors
     public gameBoard() {
         initializeBoard();
     }
-
-    public void placeElemets(int x, int y, char element) {
-        board[x][y] = element;
-    }
-
-    //gameBoard constructor
+    
+    //non-default constructor
     public gameBoard(int no_of_opponents) {
         initializeBoard();
-        placeFortsRandomly(no_of_opponents);
+        this.generatePolyominos(no_of_opponents);
     }
 
     //gameBoard initializer
@@ -29,28 +26,6 @@ public class gameBoard {
                 board[i][j] = '~';
             }
         }
-    }
-
-    private void placeFortsRandomly(int no_of_opponents) {
-        forts = new Fort[no_of_opponents];
-        for(int i = 0; i < no_of_opponents; i++) {
-            Fort fort = generateRandomFort();
-            while(!isValidFort(fort)) {
-                fort = generateRandomFort();
-            }
-            placeFort(fort);
-            forts[i] = fort;
-        }
-    }
-
-    private  Fort generateRandomFort() {
-        Random random = new Random();
-        // char[][] shape = getRandomPolyominoShape();
-        char[][] shape = {{'F', 'F'}, {'F', 'F'}};
-        int x = random.nextInt(board_size - shape.length + 1);
-        int y = random.nextInt(board_size - shape[0].length + 1);
-
-        return new Fort(x, y, shape);
     }
 
     public char [][] generatePolyominos(int size) {
@@ -178,14 +153,6 @@ public class gameBoard {
         }
     }
 
-    private boolean isValidFort(Fort fort) {
-        return board[fort.getX()][fort.getY()] == '~';
-    }
-
-    private void placeFort(Fort fort) {
-        board[fort.getX()][fort.getY()] = 'F';
-    }
-
     public void printBoard() {
         System.out.print("  ");
         for (int i = 0; i < board_size; i++) {
@@ -201,24 +168,21 @@ public class gameBoard {
             System.out.println();
         }
     }
+    
+    public void printHiddenBoard() {
+        System.out.print("  ");
+        for (int i = 0; i < board_size; i++) {
+            System.out.print(i + 1 + " ");
+        }
+        System.out.println();
 
-    public static void printShape(char[][] shape) {
-        for (int i = 0; i < shape.length; i++) {
-            for (int j = 0; j < shape[0].length; j++) {
-                System.out.print(shape[i][j] + " ");
+        for (int i = 0; i < board_size; i++) {
+            System.out.print((char)('A' + i) + " ");
+            for (int j = 0; j < board_size; j++) {
+                System.out.print(hiddenBoard[i][j] + " ");
             }
             System.out.println();
         }
-    }
-
-
-    public static void main(String[] args) {
-        gameBoard board = new gameBoard();
-        // board.printBoard();
-        board.generatePolyominos(5);
-
-    //     String charValue = String.valueOf(100);
-    //     System.out.println(charValue);
     }
 
 }
