@@ -7,15 +7,14 @@ public class gameBoard {
     private char[][] board;
     private char [][] hiddenBoard;
 
-    //default-constructors
     public gameBoard() {
         initializeBoard();
+        this.hiddenBoard = new char[board_size][board_size];
     }
-    
-    //non-default constructor
+
     public gameBoard(int no_of_opponents) {
         initializeBoard();
-        hiddenBoard = new char[board_size][board_size];
+        this.hiddenBoard = new char[board_size][board_size];
         this.generatePolyominos(no_of_opponents);
     }
 
@@ -27,12 +26,11 @@ public class gameBoard {
         board[x][y] = ch;
     }
 
-    //gameBoard initializer
     private void initializeBoard() {
         board = new char[board_size][board_size];
         for (int i = 0; i < board_size; i++) {
             for (int j = 0; j < board_size; j++) {
-                board[i][j] = '~';
+                board[i][j] = '.';
             }
         }
     }
@@ -41,52 +39,47 @@ public class gameBoard {
         for(int i = 0; i < size; i++) {
             this.getRandomPolyominoShape(i);
         }
-
-        // System.out.println("Board with Forts");
-        // this.printBoard();
-
         return this.board;
     }
 
     public void getRandomPolyominoShape(int i) {
         Random random = new Random();
 
+        final int max_attemts = 5;
+        int attempts = 0;
+
         int startX;
         int startY;
 
         do {
+            if(attempts > max_attemts) {
+                System.out.println("Error: Unable to place 20 on the board.");
+                System.out.println("Try running game again with fewer forts.");
+                return;
+            }
+
             startX = random.nextInt(10);
             startY = random.nextInt(10);
-        } while (this.board[startX][startY] != '~');
+
+            attempts++;
+        } while (this.board[startX][startY] != '.');
 
         this.board[startX][startY] = (char) ('A' + i);
-        int tempY = startY + 1;
-        char startXChar = (char) ('A' + startX);
-        String position = startXChar + Integer.toString(tempY);
-        System.out.println("StartX: " + position);
 
-        int prevDirection = -1; // Initialize prevDirection
-        int fortSize = 1; // Start with 1 since the first cell is already filled
-        // System.out.println("EMPTY BOARD");
-        // this.printBoard();
+        int prevDirection = -1;
+        int fortSize = 1; 
 
         do {
-            // Get a new direction that is not opposite to the previous direction
             int newDirection;
             do {
                 newDirection = random.nextInt(4);
             } while (isOppositeDirection(prevDirection, newDirection) || isValidDirection(startX, startY, newDirection));
 
             prevDirection = newDirection;
-            
-
-            // System.out.println("New Direction: " + newDirection);
-
-            // Update the board based on the new direction
             switch (newDirection) {
                 case 0:
                     // Up
-                    if (startX - 1 >= 0 && this.board[startX - 1][startY] == '~') {
+                    if (startX - 1 >= 0 && this.board[startX - 1][startY] == '.') {
                         this.board[startX - 1][startY] = (char) ('A' + i);
                         startX--;
                         fortSize++;
@@ -96,7 +89,7 @@ public class gameBoard {
 
                 case 1:
                     // Down
-                    if (startX + 1 < 10 && this.board[startX + 1][startY] == '~') {
+                    if (startX + 1 < 10 && this.board[startX + 1][startY] == '.') {
                         this.board[startX + 1][startY] = (char) ('A' + i);
                         startX++;
                         fortSize++;
@@ -106,7 +99,7 @@ public class gameBoard {
 
                 case 2:
                     // Left
-                    if (startY - 1 >= 0 && this.board[startX][startY - 1] == '~') {
+                    if (startY - 1 >= 0 && this.board[startX][startY - 1] == '.') {
                         this.board[startX][startY - 1] = (char) ('A' + i);
                         startY--;
                         fortSize++;
@@ -116,7 +109,7 @@ public class gameBoard {
 
                 case 3:
                     // Right
-                    if (startY + 1 < 10 && this.board[startX][startY + 1] == '~') {
+                    if (startY + 1 < 10 && this.board[startX][startY + 1] == '.') {
                         this.board[startX][startY + 1] = (char) ('A' + i);
                         startY++;;
                         fortSize++;
@@ -127,14 +120,10 @@ public class gameBoard {
                 default:
                     break;
             }
-        } while (fortSize < 5); // Change the loop condition to fortSize <= 5
-
-        // System.out.println("Board with Fort");
-        // this.printBoard();
+        } while (fortSize < 5); 
     }
 
     private boolean isOppositeDirection(int prevDirection, int newDirection) {
-        // Check if the new direction is opposite to the previous direction
         return (prevDirection == 0 && newDirection == 1) ||
                (prevDirection == 1 && newDirection == 0) ||
                (prevDirection == 2 && newDirection == 3) ||
@@ -142,7 +131,6 @@ public class gameBoard {
     }
 
     private boolean isValidDirection(int startX, int startY, int newDirection) {
-        // Check if the new direction is valid
         switch (newDirection) {
             case 0:
                 // Up
@@ -212,22 +200,4 @@ public class gameBoard {
             System.out.println();
         }
     }
-    
-    // public void opponentHit() {
-    //     for(int i = 0; i < getNo_of_opponents(); i++) {
-
-    //     }
-    // }
-
-    public static void main(String[] args) {
-        gameBoard board = new gameBoard();
-        // board.printBoard();
-        board.generatePolyominos(5);
-        board.printBoard();
-
-        // for(int i = 0; i < 10; i++) {
-        // board.playerHit();}
-        board.printBoard();
-    }
-
 }

@@ -15,7 +15,6 @@ public class gameplay {
         this.board = new gameBoard();
         this.total_score = 0;
         this.no_of_opponents = 0;
-        // Opponent[] opponents = new Opponent[no_of_opponents];
         this.turn = 0;
     }
 
@@ -90,27 +89,37 @@ public class gameplay {
     }
 
     public static int[] convertMoveToMatrixCoordinates(String userInput) {
-        // Extract row and column information from user input
-        char rowLetter = userInput.charAt(0);
-        int columnNumber = Integer.parseInt(userInput.substring(1));
+        char rowLetter;
+        int columnNumber;
 
-        // Convert row letter to numeric index
+        while (true) {
+            try {
+                rowLetter = Character.toUpperCase(userInput.charAt(0));
+                columnNumber = Integer.parseInt(userInput.substring(1));
+                if (rowLetter >= 'A' && rowLetter <= 'J' && columnNumber >= 1 && columnNumber <= 10) {
+                    break; 
+                }
+
+                System.out.println("Invalid target. Please enter a coordinate such as D10.");
+
+            } catch (NumberFormatException | StringIndexOutOfBoundsException e) {
+                System.out.println("Invalid target. Please enter a coordinate such as D10.");
+            }
+            Scanner scanner = new Scanner(System.in);
+            System.out.print("Enter a move: ");
+            userInput = scanner.nextLine();
+            scanner.close();
+        }
         int rowIndex = rowLetter - 'A';
-
-        // Adjust column number to match array indices (starting from 0)
         int columnIndex = columnNumber - 1;
-
-        // Return the matrix coordinates as an array
         return new int[]{rowIndex, columnIndex};
     }
 
 
     public void playerHit(String position) {
-        
-        System.out.println("Hitting at " + position);
         int[] coordinates = convertMoveToMatrixCoordinates(position);
 
-        if (board.getChar(coordinates[0], coordinates[1]) != '~') {
+        if (board.getChar(coordinates[0], coordinates[1]) != '.') {
             char ch = board.getChar(coordinates[0], coordinates[1]);
             board.setChar(coordinates[0], coordinates[1], Character.toLowerCase(ch));
             System.out.println("Hit!");
@@ -129,7 +138,7 @@ public class gameplay {
             
         }
 
-        if(board.getChar(coordinates[0], coordinates[1]) == '~') {
+        if(board.getChar(coordinates[0], coordinates[1]) == '.') {
             board.setChar(coordinates[0], coordinates[1], ' ');
             System.out.println("Miss!");
         }
@@ -138,7 +147,7 @@ public class gameplay {
     public void opponentHit() {
         for(int i = 0; i < no_of_opponents; i++) {
             total_score += opponents[i].getDamage();
-            System.out.println("Opponent " + opponents[i].getID() + " has done " + opponents[i].getDamage() + " damage!");
+            System.out.println("Opponent #" + (i + 1) + " of " + no_of_opponents + " shot you for " + opponents[i].getDamage() + " points");
         }
     }
 
@@ -146,16 +155,19 @@ public class gameplay {
 
         do {
             if(this.turn == 0){
+                System.out.println("Game Board: ");
                 board.printHiddenBoard();
 
                 Scanner sc = new Scanner(System.in);
-                System.out.println("Enter the position to hit: ");
+                System.out.println("Enter your move: ");
                 String position = sc.nextLine();
 
                 playerHit(position);
                 System.out.println();
                 System.out.println();
                 setTurn(1);
+
+                sc.close();
             }
             else {
                 opponentHit();
@@ -164,15 +176,21 @@ public class gameplay {
                 setTurn(0);
             }
 
-            System.out.println("Total score: " + total_score + "/2500");
+            System.out.println("Opponent score: " + total_score + "/2500");
         } while (!allOpponentsDefeated() && total_score < 2500);
 
         if(allOpponentsDefeated()) {
-            System.out.println("Congratulations! You have defeated all the opponents!");
+            System.out.println("Congratulations! You won!");
         }
         else {
-            System.out.println("You have lost the game!");
+            System.out.println("I'm sorry, your fort is all wet! They win!");
         }
+        System.out.println();
+        System.out.println("Game Board: ");
+        board.printBoard();
+        System.out.println("Opponent score: " + total_score + "/2500");
+        System.out.println("(Lower case fort letters are where you shot.)");
+        System.out.println();
     }
 
     public void printHiddenBoard() {
@@ -186,18 +204,6 @@ public class gameplay {
         }
     }
 
-    public void getUserInput() {
-
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter the number of opponents: ");
-        String no_of_opponents = scanner.nextLine();
-
-        char firstChar = no_of_opponents.charAt(0);
-        int convertedValue = Character.getNumericValue(firstChar);
-        gameplay game = new gameplay(convertedValue);
-        game.checkCheat(no_of_opponents);
-
-        game.playGame();
-    }
+    
 
 }
