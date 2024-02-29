@@ -15,7 +15,16 @@ public class gameBoard {
     //non-default constructor
     public gameBoard(int no_of_opponents) {
         initializeBoard();
+        hiddenBoard = new char[board_size][board_size];
         this.generatePolyominos(no_of_opponents);
+    }
+
+    public char getChar(int x, int y) {
+        return board[x][y];
+    }
+
+    public void setChar(int x, int y, char ch) {
+        board[x][y] = ch;
     }
 
     //gameBoard initializer
@@ -32,6 +41,9 @@ public class gameBoard {
         for(int i = 0; i < size; i++) {
             this.getRandomPolyominoShape(i);
         }
+
+        // System.out.println("Board with Forts");
+        // this.printBoard();
 
         return this.board;
     }
@@ -68,7 +80,7 @@ public class gameBoard {
             prevDirection = newDirection;
             
 
-            System.out.println("New Direction: " + newDirection);
+            // System.out.println("New Direction: " + newDirection);
 
             // Update the board based on the new direction
             switch (newDirection) {
@@ -117,8 +129,8 @@ public class gameBoard {
             }
         } while (fortSize < 5); // Change the loop condition to fortSize <= 5
 
-        System.out.println("Board with Fort");
-        this.printBoard();
+        // System.out.println("Board with Fort");
+        // this.printBoard();
     }
 
     private boolean isOppositeDirection(int prevDirection, int newDirection) {
@@ -168,8 +180,24 @@ public class gameBoard {
             System.out.println();
         }
     }
-    
+
+    public void updateHiddenBoard() {
+        for(int i = 0; i < board_size; i++) {
+            for(int j = 0; j < board_size; j++) {
+                char cell = board[i][j];
+                if(cell == ' ' || Character.isLowerCase(cell)) {
+                    hiddenBoard[i][j] = cell;
+                }
+                else {
+                    hiddenBoard[i][j] = '~';
+                }
+            }
+        }
+
+    }
+
     public void printHiddenBoard() {
+        updateHiddenBoard();
         System.out.print("  ");
         for (int i = 0; i < board_size; i++) {
             System.out.print(i + 1 + " ");
@@ -183,6 +211,23 @@ public class gameBoard {
             }
             System.out.println();
         }
+    }
+    
+    // public void opponentHit() {
+    //     for(int i = 0; i < getNo_of_opponents(); i++) {
+
+    //     }
+    // }
+
+    public static void main(String[] args) {
+        gameBoard board = new gameBoard();
+        // board.printBoard();
+        board.generatePolyominos(5);
+        board.printBoard();
+
+        // for(int i = 0; i < 10; i++) {
+        // board.playerHit();}
+        board.printBoard();
     }
 
 }
