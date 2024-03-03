@@ -1,0 +1,55 @@
+% Document preamble
+\documentclass{article}
+\usepackage{enumitem}
+
+\begin{document}
+
+\section*{Initializing the Game Board}
+\textbf{Step Overview:}
+\begin{enumerate}[label=\arabic*.]
+    \item When the game is initialized, the game board is set up with a specified number of opponents, and polyomino shapes are randomly placed on the board.
+\end{enumerate}
+
+\textbf{Explanation:}
+\begin{itemize}
+    \item The \texttt{gameplay} class is responsible for initializing the game.
+    \item \texttt{gameplay} creates an instance of the \texttt{gameBoard} class and specifies the number of opponents.
+    \item The \texttt{gameBoard} class, during initialization, generates polyomino shapes using the \texttt{generatePolyominos} method.
+    \item Polyomino shapes are randomly placed on the board using the \texttt{getRandomPolyominoShape} method.
+    \item \texttt{Opponent} objects are created and assigned specific IDs, corresponding to the polyomino shapes on the board.
+\end{itemize}
+
+\textbf{Classes Involved:}
+\begin{itemize}
+    \item \texttt{gameplay} class manages the overall game and interacts with the \texttt{gameBoard} class.
+    \item \texttt{gameBoard} class handles the initialization of the board and generation of polyomino shapes.
+    \item \texttt{Opponent} class represents individual opponents with specific IDs and fort configurations.
+\end{itemize}
+
+\section*{Processing Player's Move}
+\textbf{Step Overview:}
+\begin{enumerate}[label=\arabic*.]
+    \item The player inputs a move, and the system processes the move, updating the board, checking for hits or misses, and handling opponent fort damage.
+\end{enumerate}
+
+\textbf{Explanation:}
+\begin{itemize}
+    \item The \texttt{gameplay} class handles the player's move processing.
+    \item The \texttt{convertMoveToMatrixCoordinates} method converts the user's input to matrix coordinates (row, column).
+    \item The \texttt{playerHit} method updates the game board based on the player's move and checks for hits or misses.
+    \item If a hit occurs, the corresponding opponent's fort is damaged using the \texttt{decreaseUndamaged\_forts} method in the \texttt{Opponent} class.
+    \item If all forts of an opponent are damaged, the opponent is considered defeated.
+    \item The system alternates turns between the player and opponents, updating the \texttt{turn} attribute in the \texttt{gameplay} class.
+\end{itemize}
+
+\textbf{Classes Involved:}
+\begin{itemize}
+    \item \texttt{gameplay} class manages the game flow and calls methods to process the player's move.
+    \item \texttt{gameBoard} class stores the current state of the board and is updated by the player's move.
+    \item \texttt{Opponent} class represents opponents with unique IDs and fort configurations.
+    \item \texttt{convertMoveToMatrixCoordinates} is a utility method for translating user input.
+\end{itemize}
+
+This design ensures that each class has a well-defined responsibility, promoting modularity and maintainability. The \texttt{gameplay} class acts as a controller, coordinating interactions between the user, game board, and opponents, while the \texttt{gameBoard} and \texttt{Opponent} classes handle specific aspects of the game state and opponent behavior.
+
+\end{document}
